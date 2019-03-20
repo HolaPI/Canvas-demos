@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>炫彩小球</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background: #181818;
+			height: 100%;
+			width : 100%;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="happy"></canvas>
+	<script>
+		var myCanvas = document.getElementById('happy');
+		myCanvas.width = document.documentElement.clientWidth;
+		myCanvas.height = document.documentElement.clientHeight;
+		var ctx = myCanvas.getContext('2d');
+		//小球对象
+		function Ball(x, y){
+			this.x = x;
+			this.y = y;
+			this.r = 20;
+			this.color = 'rgb(' + Math.floor(Math.random() * 256) + ',' + 
+			Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+			this.dx = parseInt(Math.random() * 18) - 9;
+			this.dy = parseInt(Math.random() * 18) - 9;
+			ballArr.push(this);
+		}
+		//渲染页面
+		Ball.prototype.render = function(){
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+			ctx.closePath();
+			ctx.fillStyle = this.color;
+			ctx.fill();
+			
+		}
+		//刷新页面
+		Ball.prototype.update = function(){
+			this.x += this.dx;
+			this.y += this.dy;
+			this.r --;
+			if(this.r < 0){
+				this.die();  //鼠标停止移动时，ballArr的长度为0，节约资源
+			}
+			// this.r > 0 ? this.r -- : this.r = 0;  //不用调用die方法也可实现判定，
+			//但ballArr长度会越来越大，浪费空间
+		}
+		//去除半径看为负的小球
+		Ball.prototype.die = function(){
+			for(var i = 0; i < ballArr.length; i ++){
+				if(ballArr[i] === this){
+					ballArr.splice(i, 1);
+				}
+			}
+		}
+		//将小球对象存放在数组中
+		var ballArr = [];
+		//移动鼠标创建小球对象
+		myCanvas.onmousemove = function(e){
+			new Ball(e.clientX, e.clientY);
+		}
+		//设置计时器，渲染
+		setInterval(function(){
+			ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+			for(var i = 0; i < ballArr.length; i ++){
+				ballArr[i].update();
+				//半径大于0的才渲染
+				ballArr[i] && ballArr[i].render();
+			}
+		}, 20);
+	</script>
+
+<!-- 	<script>
+		setCookie('wen', 'what is this')
+		function setCookie(name, value){
+			var key = '';
+			var days = 2;
+			var exp = new Date();
+			var domain = '';
+			exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
+			if (key == null || key == ''){
+				document.cookie = name + '=' + encodeURI(value) + ';expires=' + exp.toGMTString() + ";path=/;domain=" + domain + ';';
+			}else{
+				var nameValue = getCookie(name);
+				if(nameValue == ''){
+					document.cookie = name + '=' + key + '=' + encodeURI(value) + ';expires=' + exp.toGMTString() + ';path=/;domain=' + domain + ';';
+				}else{
+					var keyValue = getCookie(name, key);
+					if(keyValue != ''){
+						nameValue = nameValue.replace(key + '=' + keyValue, key + '=' + encodeURI(value));
+						document.cookie = name + '=' + nameValue + ';expires=' + exp.toGMTString() + ';path=/;domain=' + domain + ';';
+					}else{
+						document.cookie = name + '=' + nameValue + '&' + key + '=' + encodeURI(value) + ';expires=' + exp.toGMTString() + ';path=/;domain=' + domain + ';';
+					}
+				}
+			}
+		}
+		function getCookie(name){
+			var nameValue = '';
+			var key = '';
+			var arr, reg = new RegExp('(^|)'+ name + '=([^;]*(;|$))');
+			if(arr = document.cookie.match(reg)){
+				nameValue = docodeURI(arr[2]);
+			}
+			if(key != null && key != ''){
+				reg = new RegExp('(^|$)' + key + '([^(;|&|=)*](&|$))');
+				if(arr = nameValue.match(reg)){
+					return decodeURI(arr[2]);
+				}else {
+					return '';
+				}
+			}else{
+				return nameValue;
+			}
+		}
+	</script> -->
+</body>
+</html>
