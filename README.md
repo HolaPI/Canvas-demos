@@ -1,1 +1,1 @@
-## Here are some demos using <canvas></canvas> tag
+## Here are some demos using \<canvas\>\<\/canvas\> tag
